@@ -1,0 +1,48 @@
+--// GetSafeService
+
+local function GetSafeService(serviceName, useCloneRef)
+    local ok, result = pcall(function()
+        local g = game or Game
+        if not g then return nil end
+
+        local Service
+
+         GetService
+        local s, r = pcall(function()
+            return g:GetService(serviceName)
+        end)
+        if s and r then
+            Service = r
+        end
+
+         FindService
+        if not Service and g.FindService then
+            s, r = pcall(function()
+                return g:FindService(serviceName)
+            end)
+            if s and r then
+                Service = r
+            end
+        end
+
+         Index direto
+        if not Service then
+            s, r = pcall(function()
+                return g[serviceName]
+            end)
+            if s and r then
+                Service = r
+            end
+        end
+
+        if Service and useCloneRef and type(cloneref) == "function" then
+            return cloneref(Service)
+        end
+
+        return Service
+    end)
+
+    return ok and result or nil
+end
+
+return GetSafeService
